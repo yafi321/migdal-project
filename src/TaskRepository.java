@@ -49,6 +49,8 @@ public class TaskRepository {
         List<Task> list = new ArrayList<>();
 
         String jsonTasks = readTheFile();
+        if (jsonTasks.equals(""))
+            return new ArrayList<>();
         if (jsonTasks != null){
             jsonTasks = jsonTasks.trim();
             jsonTasks = jsonTasks.substring(1, jsonTasks.length()-1).trim();
@@ -96,7 +98,6 @@ public class TaskRepository {
         String jsonTasks = "[\n"+readTheFile();
         if (jsonTasks != null){
             jsonTasks = jsonTasks.substring(1, jsonTasks.length()-1).trim();
-            System.out.println(jsonTasks);
 
             jsonTasks = jsonTasks+",\n";
             jsonTasks += task.toString();
@@ -108,14 +109,15 @@ public class TaskRepository {
     }
     public void delete(int id){
         int cnt = -1;
-        int cntToDelete =0;
+        int cntToDelete=-1;
         for (Task task: taskList){
             cnt++;
             if (task.getId() == id){
                 cntToDelete = cnt;
             }
         }
-        taskList.remove(cntToDelete);
+        if (cntToDelete != -1)
+            taskList.remove(cntToDelete);
         String str= "[\n";
         for (Task task: taskList){
             str+= task.toString()+",\n";
@@ -125,6 +127,32 @@ public class TaskRepository {
         writeToFile(str);
     }
 
+    public void update(Task task){
+        for (Task t: taskList){
+            if (t.getId()==task.getId()){
+                t.setTitle(task.getTitle());
+                t.setDescription(task.getDescription());
+                t.setStatus(task.getStatus());
+            }
+        }
+        String str= "[\n";
+        for (Task t: taskList){
+            str+= t.toString()+",\n";
+        }
+        str = str.substring(0, str.length()-2);
+        str +="\n]";
+        writeToFile(str);
+    }
+    public Task getById(int id){
+        for (Task task: taskList){
+            if (id== task.getId())
+                return task;
+        }
+        return null;
+    }
+    public List<Task> listAll(){
+        return taskList;
+    }
 
 
 }
