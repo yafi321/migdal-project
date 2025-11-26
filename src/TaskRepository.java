@@ -9,16 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskRepository {
-    private List<Task> taskList;
-    private String filePath;
+    private final List<Task> taskList;
+    private final String filePath;
 
-    public TaskRepository(String filePath){
+
+    public TaskRepository(String filePath) {
         //A constructor that accepts a file location and initializes the task list using the function
         this.filePath = filePath;
-         this.taskList = loadTasksFromFile();
+        this.taskList = loadTasksFromFile();
     }
-    private String readTheFile(){
-        String json =null;
+
+    private String readTheFile() {
+        String json = null;
         File file = new File(this.filePath);
         if (!file.exists()) {
             System.out.println("File not found: " + this.filePath);
@@ -26,10 +28,9 @@ public class TaskRepository {
         }
         try {
             json = new String(Files.readAllBytes(Paths.get(this.filePath)));
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             //Catch in case it failed to read the file
-            System.out.println("en error with read the file: "+ e.getMessage());
+            System.out.println("en error with read the file: " + e.getMessage());
         }
         return json;
     }
@@ -51,26 +52,26 @@ public class TaskRepository {
         String jsonTasks = readTheFile();
         if (jsonTasks.equals(""))
             return new ArrayList<>();
-        if (jsonTasks != null){
+        if (jsonTasks != null) {
             jsonTasks = jsonTasks.trim();
-            jsonTasks = jsonTasks.substring(1, jsonTasks.length()-1).trim();
+            jsonTasks = jsonTasks.substring(1, jsonTasks.length() - 1).trim();
             String[] tasks = jsonTasks.split("\\},\\s*\\{");//Splitting into an array of tasks
-            int id=0;
-            String title ="", description="";
-            Status status =Status.NEW;
-            for (String task: tasks){//Go over each task
-                task = task.replace("{","").replace("}","").trim();
+            int id = 0;
+            String title = "", description = "";
+            Status status = Status.NEW;
+            for (String task : tasks) {//Go over each task
+                task = task.replace("{", "").replace("}", "").trim();
                 String[] fields = task.split(",");
                 id = 0;
                 title = "";
                 description = "";
                 status = Status.NEW;
 
-                for (String field: fields){//Go over each field
+                for (String field : fields) {//Go over each field
                     String[] keyValue = field.split(":");
-                    String key = keyValue[0].replace("\"","").trim();
-                    String value = keyValue[1].replace("\"","").trim();
-                    switch (key){
+                    String key = keyValue[0].replace("\"", "").trim();
+                    String value = keyValue[1].replace("\"", "").trim();
+                    switch (key) {
                         case "id":
                             id = Integer.parseInt(value);
                             break;
@@ -81,7 +82,8 @@ public class TaskRepository {
                             description = value;
                             break;
                         case "status":
-                            status= Status.valueOf(value); break;
+                            status = Status.valueOf(value);
+                            break;
                     }
                 }
                 list.add(new Task(id, title, description, status));//add to the list
@@ -89,17 +91,17 @@ public class TaskRepository {
 
 
         }
-    return list;
+        return list;
     }
 
 
-    public void add(Task task){
+    public void add(Task task) {
         taskList.add(task);
-        String jsonTasks = "[\n"+readTheFile();
-        if (jsonTasks != null){
-            jsonTasks = jsonTasks.substring(1, jsonTasks.length()-1).trim();
+        String jsonTasks = "[\n" + readTheFile();
+        if (jsonTasks != null) {
+            jsonTasks = jsonTasks.substring(1, jsonTasks.length() - 1).trim();
 
-            jsonTasks = jsonTasks+",\n";
+            jsonTasks = jsonTasks + ",\n";
             jsonTasks += task.toString();
             jsonTasks += "\n]";
             writeToFile(jsonTasks);
@@ -107,50 +109,57 @@ public class TaskRepository {
         }
 
     }
-    public void delete(int id){
+
+    public void delete(int id) {
         int cnt = -1;
-        int cntToDelete=-1;
-        for (Task task: taskList){
+        int cntToDelete = -1;
+        for (Task task : taskList) {
             cnt++;
-            if (task.getId() == id){
+            if (task.getId() == id) {
                 cntToDelete = cnt;
             }
         }
-        if (cntToDelete != -1)
+        if (cntToDelete == -1)
+            System.out.println("the id is not found");
+        else {
             taskList.remove(cntToDelete);
-        String str= "[\n";
-        for (Task task: taskList){
-            str+= task.toString()+",\n";
+            String str = "[\n";
+            for (Task task : taskList) {
+                str += task.toString() + ",\n";
+            }
+            str = str.substring(0, str.length() - 2);
+            str += "\n]";
+            writeToFile(str);
+            System.out.println("delete success!");
         }
-        str = str.substring(0, str.length()-2);
-        str +="\n]";
-        writeToFile(str);
     }
 
-    public void update(Task task){
-        for (Task t: taskList){
-            if (t.getId()==task.getId()){
+    public void update(Task task) {
+        for (Task t : taskList) {
+            if (t.getId() == task.getId()) {
                 t.setTitle(task.getTitle());
                 t.setDescription(task.getDescription());
                 t.setStatus(task.getStatus());
             }
         }
-        String str= "[\n";
-        for (Task t: taskList){
-            str+= t.toString()+",\n";
+        String str = "[\n";
+        for (Task t : taskList) {
+            str += t.toString() + ",\n";
         }
-        str = str.substring(0, str.length()-2);
-        str +="\n]";
+        str = str.substring(0, str.length() - 2);
+        str += "\n]";
         writeToFile(str);
     }
-    public Task getById(int id){
-        for (Task task: taskList){
-            if (id== task.getId())
+
+    public Task getById(int id) {
+        for (Task task : taskList) {
+            if (id == task.getId())
                 return task;
         }
         return null;
     }
-    public List<Task> listAll(){
+
+    public List<Task> listAll() {
         return taskList;
     }
 

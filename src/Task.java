@@ -3,7 +3,16 @@ public class Task {
     private String title;
     private String description;
     private Status status;
+    private static int taskCnt = 1;
 
+    public Task(String title, String description, Status status) {
+        this.id = taskCnt;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        taskCnt++;
+
+    }
     public Task(int id, String title, String description, Status status) {
         this.id = id;
         this.title = title;
