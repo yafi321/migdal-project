@@ -31,7 +31,7 @@ public class Main {
                     title = in.nextLine();
                     System.out.println("enter the description");
                     description = in.nextLine();
-                    repository.add(new Task(title, description, Status.NEW));
+                    repository.add(title, description, Status.NEW);
                     System.out.println("your task is add to the list");
                     break;
                 case 2:

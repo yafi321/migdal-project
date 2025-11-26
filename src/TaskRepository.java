@@ -11,12 +11,14 @@ import java.util.List;
 public class TaskRepository {
     private final List<Task> taskList;
     private final String filePath;
+    private static int cntTaks;
 
 
     public TaskRepository(String filePath) {
         //A constructor that accepts a file location and initializes the task list using the function
         this.filePath = filePath;
         this.taskList = loadTasksFromFile();
+        cntTaks = taskList.size()+1;
     }
 
     private String readTheFile() {
@@ -95,14 +97,16 @@ public class TaskRepository {
     }
 
 
-    public void add(Task task) {
-        taskList.add(task);
+    public void add(String title, String description, Status status) {
+        Task newTask = new Task(cntTaks, title, description, status);
+        taskList.add(newTask);
+        cntTaks++;
         String jsonTasks = "[\n" + readTheFile();
         if (jsonTasks != null) {
             jsonTasks = jsonTasks.substring(1, jsonTasks.length() - 1).trim();
 
             jsonTasks = jsonTasks + ",\n";
-            jsonTasks += task.toString();
+            jsonTasks += newTask.toString();
             jsonTasks += "\n]";
             writeToFile(jsonTasks);
 
