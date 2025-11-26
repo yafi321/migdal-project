@@ -21,4 +21,17 @@ public class TaskService {
         }
     }
 
+    public List<Task> search(String text){
+        //An action that accepts a text string, iterates over the list of tasks and,
+        // if the text appears in the title or description,
+        // returns a list of all tasks that meet this condition.
+        List<Task> result = new ArrayList<>();
+        for (Task task: repository.listAll()){
+            if (task.getTitle().equals(text) || task.getDescription().equals(text)){
+                result.add(task);
+            }
+        }
+        return result;
+    }
+
 }
