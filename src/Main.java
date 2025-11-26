@@ -3,6 +3,11 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
+        //MAIN program that offers the user an option selection until the number 9 is pressed
+        //Routing with SWITCH
+        //Each time we ask the user for the appropriate data,
+        // we will perform tests and return a result to the user according to the action they selected.
         Scanner in = new Scanner(System.in);
         TaskRepository repository = new TaskRepository("D:\\תכנות\\migdal-project\\migdal-project\\test.JSON");
         TaskService service = new TaskService(repository);
@@ -66,7 +71,6 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("enter id to delete");
-                    //אולי לעשות אחיד שמחזיר את המשימה שנמחקה
                     id = in.nextInt();
                     in.nextLine();
                     repository.delete(id);

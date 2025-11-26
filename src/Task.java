@@ -46,6 +46,7 @@ public class Task {
 
     @Override
     public String toString() {
+        //Print function, returns a JSON-style string
         return "{" +
                 "\"id\": " + id + "," +
                 " \"title\": \"" + title + "\"," +

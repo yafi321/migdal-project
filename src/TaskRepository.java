@@ -11,17 +11,17 @@ import java.util.List;
 public class TaskRepository {
     private final List<Task> taskList;
     private final String filePath;
-    private static int cntTaks;
+    private static int cntTask = 1;
 
 
     public TaskRepository(String filePath) {
         //A constructor that accepts a file location and initializes the task list using the function
         this.filePath = filePath;
-        this.taskList = loadTasksFromFile();
-        cntTaks = taskList.size()+1;
+        this.taskList = loadTasksFromFile();// Loading the file into the list
     }
 
     private String readTheFile() {
+        //A function that reads the file and returns a string with the contents
         String json = null;
         File file = new File(this.filePath);
         if (!file.exists()) {
@@ -38,6 +38,7 @@ public class TaskRepository {
     }
 
     private void writeToFile(String newContent) {
+        //A function that accepts a string and writes it to a file
         File file = new File(this.filePath);
         try {
             Files.write(Paths.get(this.filePath), newContent.getBytes());
@@ -88,6 +89,9 @@ public class TaskRepository {
                             break;
                     }
                 }
+                //When I first load the file, I save the last ID number to
+                // create an ID that doesn't already exist next time.
+                cntTask = id+1;
                 list.add(new Task(id, title, description, status));//add to the list
             }
 
@@ -98,9 +102,11 @@ public class TaskRepository {
 
 
     public void add(String title, String description, Status status) {
-        Task newTask = new Task(cntTaks, title, description, status);
+        //An add function that receives task data creates it,
+        // adds it to the list, and rewrites the file with the new task.
+        Task newTask = new Task(cntTask, title, description, status);
         taskList.add(newTask);
-        cntTaks++;
+        cntTask++;
         String jsonTasks = "[\n" + readTheFile();
         if (jsonTasks != null) {
             jsonTasks = jsonTasks.substring(1, jsonTasks.length() - 1).trim();
@@ -115,6 +121,8 @@ public class TaskRepository {
     }
 
     public void delete(int id) {
+        //A delete function that searches for the location of the task,
+        // deletes it from the list, and updates and rewrites the file accordingly.
         int cnt = -1;
         int cntToDelete = -1;
         for (Task task : taskList) {
@@ -139,6 +147,8 @@ public class TaskRepository {
     }
 
     public void update(Task task) {
+        //An update function that receives a task, goes through the task list,
+        // finds the task and updates it, and then rewrites the updated tasks to the file.
         for (Task t : taskList) {
             if (t.getId() == task.getId()) {
                 t.setTitle(task.getTitle());
@@ -156,6 +166,8 @@ public class TaskRepository {
     }
 
     public Task getById(int id) {
+        //A function that receives a task ID, iterates over the list and
+        // when found returns the task, if not found returns NULL
         for (Task task : taskList) {
             if (id == task.getId())
                 return task;
@@ -164,6 +176,7 @@ public class TaskRepository {
     }
 
     public List<Task> listAll() {
+        //A function that returns the entire list.
         return taskList;
     }
 
