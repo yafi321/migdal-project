@@ -34,4 +34,33 @@ public class TaskService {
         return result;
     }
 
+    public List<Task> sortListByStatus(){
+        //An action that iterates over the list of tasks,
+        // goes through the status of each task and associates it with the list accordingly,
+        // finally returning a unified, sorted list of all tasks.
+        List<Task> newList = new ArrayList<>();
+        List<Task> inProgress = new ArrayList<>();
+        List<Task> done = new ArrayList<>();
+
+        for (Task task: repository.listAll()){
+            switch (task.getStatus()){
+                case Status.NEW:
+                    newList.add(task);
+                    break;
+                case Status.IN_PROGRESS:
+                    inProgress.add(task);
+                    break;
+                case Status.DONE:
+                    done.add(task);
+            }
+
+        }
+        List<Task> result = new ArrayList<>();
+        result.addAll(newList);
+        result.addAll(inProgress);
+        result.addAll(done);
+        return result;
+    }
+
+
 }
